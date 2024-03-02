@@ -78,7 +78,8 @@ def redirect_url(request, short_url_extension):
         return render(request, 'home.html', status=404)
     if total_reports >= 15:
         url.delete()
-    if total_reports >= 3:
+        return render(request, 'home.html', status=404)
+    if total_reports >= 5:
         full_warning_url = request.build_absolute_uri('/w/') + short_url_extension
         return redirect(full_warning_url)
     url.increment()

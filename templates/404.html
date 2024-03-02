@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Page Not Found - Lilurls{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4">
+    <div class="py-20">
+        <h1 class="text-5xl font-bold text-center text-light">Page Not Found</h1>
+        <p class="text-base font-light text-center text-light mt-4">Oops! The page you're looking for couldn't be found.</p>
+    </div>
+    <div class="max-w-xl mt-20 mb-44 mx-auto rounded-md border border-neutral-800 bg-dark text-center shadow overflow-hidden">
+        <div class="p-8">
+            <p class="text-lg text-light mb-4">The URL might have expired or been deleted due to a violation of our Terms of Service.</p>
+            <a href="{% url 'home' %}" class="bg-light-100 hover:bg-light-300 text-dark font-bold py-3 px-6 rounded focus:outline-none focus:shadow-outline">Go to Homepage</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
