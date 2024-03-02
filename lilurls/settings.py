@@ -27,12 +27,12 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'lilurls.com',
-    'www.lilurls.com',
+    'url.lilurls.com',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://lilurls.com',
-    'https://www.lilurls.com',
+    'https://url.lilurls.com',
 ]
 
 INTERNAL_IPS = (
