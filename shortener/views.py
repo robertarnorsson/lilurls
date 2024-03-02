@@ -70,12 +70,17 @@ def tracking(request):
     example_url = request.build_absolute_uri('/u/') + url_trail
     return render(request, 'tracking.html', {'form': form, 'example_site_url': example_url})
 
-
 def redirect_url(request, short_url_extension):
     url = get_object_or_404(models.UrlModel, short_url_extension=short_url_extension)
+    total_reports = url.get_reports()
     if url.is_expired():
         url.delete()
         return render(request, 'home.html', status=404)
+    if total_reports >= 15:
+        url.delete()
+    if total_reports >= 3:
+        full_warning_url = request.build_absolute_uri('/w/') + short_url_extension
+        return redirect(full_warning_url)
     url.increment()
     return redirect(url.original_url)
 
@@ -84,24 +89,47 @@ def track_url(request, short_url_extension):
     original_url = url.get_original()
     count = url.get_counter()
     days_left = url.get_days_left()
+    total_reports = url.get_reports()
     if url.is_expired():
         url.delete()
         return render(request, 'home.html', status=404)
     full_short_url = request.build_absolute_uri('/u/') + short_url_extension
-    return render(request, 'track_url.html', {'short_url': full_short_url, 'original_url': original_url, 'url_extension': short_url_extension, 'total_count': count, 'days_left': days_left})
+    context = {
+        'short_url': full_short_url,
+        'original_url': original_url,
+        'url_extension': short_url_extension,
+        'total_count': count,
+        'days_left': days_left,
+        'total_reports': total_reports,
+    }
+    return render(request, 'track_url.html', context)
 
 def report_url(request):
     form_submitted = False
     if request.method == 'POST':
         form = forms.ReportForm(request.POST)
         if form.is_valid():
-            url = form.cleaned_data['url']
+            short_url = form.cleaned_data['url']
             violation_type = form.cleaned_data['violation_type']
             message = form.cleaned_data['message']
-            short_url = models.Report(url=url, violation_type=violation_type, message=message)
-            short_url.save()
-            form_submitted = True
+            url_trail = get_url_trail(short_url)
+            try:
+                url_model = models.UrlModel.objects.get(short_url_extension=url_trail)
+                url_model.increment_report()
+                report = models.Report(url=short_url, violation_type=violation_type, message=message)
+                report.save()
+                form_submitted = True
+            except models.UrlModel.DoesNotExist:
+                messages.error(request, "The short URL does not exist in our database.")
     else:
         form = forms.ReportForm()
 
     return render(request, 'report.html', {'form': form, 'form_submitted': form_submitted})
+
+def rediect_warning(request, short_url_extension):
+    short_url_extension = short_url_extension
+    url_model = models.UrlModel.objects.get(short_url_extension=short_url_extension)
+    original_url = url_model.get_original()
+    total_reports = url_model.get_reports()
+    full_short_url = request.build_absolute_uri('/u/') + short_url_extension
+    return render(request, 'redirect_warning.html', {'total_reports': total_reports, 'original_url': original_url, 'short_url': full_short_url})

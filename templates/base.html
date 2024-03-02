@@ -12,8 +12,8 @@
     {% include 'components/css.html' %}
     {% include 'components/js.html' %}
 </head>
-<body class="overflow-x-hidden bg-light dark:bg-dark">
-    <div>
+<body class="flex flex-col min-h-screen overflow-x-hidden bg-light dark:bg-dark">
+    <div class="flex-grow">
         {% if messages %}
         <div class="fixed top-0 left-0 right-0 pt-2 z-[999]">
             <ul class="flex flex-col items-center">
@@ -49,8 +49,10 @@
             </ul>
         </div>
         {% endif %}
-        {% block content %}
-        {% endblock %}
+        <div>
+            {% block content %}
+            {% endblock %}
+        </div>
     </div>
     {% include 'components/footer.html' %}
 </body>

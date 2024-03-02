@@ -5,9 +5,11 @@
 
 {% block content %}
 <div class="container mx-auto px-4">
-    <h1 class="text-5xl font-bold text-center text-light mt-24">Effortless URL Shortening</h1>
-    <p class="text-base font-light text-center text-light mt-4 mb-24">We've shortened <strong class="text-xl mx-1">{{ total_count }}</strong> URLs so far</p>
-    <div class="max-w-xl my-44 mx-auto rounded-md border border-neutral-800 bg-dark text-center shadow overflow-hidden">
+    <div class="py-20">
+        <h1 class="text-5xl font-bold text-center text-light">Effortless URL Shortening</h1>
+        <p class="text-base font-light text-center text-light mt-4">We've shortened <strong class="text-xl mx-1">{{ total_count }}</strong> URLs so far</p>
+    </div>
+    <div class="max-w-xl mt-20 mb-44 mx-auto rounded-md border border-neutral-800 bg-dark text-center shadow overflow-hidden">
         {% if short_url %}
         <div class="p-4">
             <div class="flex justify-center items-center py-12">

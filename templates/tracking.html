@@ -5,9 +5,11 @@
 
 {% block content %}    
 <div class="container mx-auto px-4">
-    <h1 class="text-5xl font-bold text-center text-light mt-24">Track a shortened URL</h1>
-    <p class="text-base font-light text-center text-light mt-4 mb-24">Enter a shortened URL to track the times it has been clicked</p>
-    <div class="max-w-xl my-44 mx-auto rounded-md border border-neutral-800 bg-dark text-center shadow overflow-hidden">
+    <div class="py-20">
+        <h1 class="text-5xl font-bold text-center text-light">Track a shortened URL</h1>
+        <p class="text-base font-light text-center text-light mt-4">Enter a shortened URL to track the times it has been clicked</p>
+    </div>
+    <div class="max-w-xl mt-20 mb-44 mx-auto rounded-md border border-neutral-800 bg-dark text-center shadow overflow-hidden">
         <div class="p-4">
             <form class="p-8" action="{% url 'track' %}" method="post">
                 {% csrf_token %}

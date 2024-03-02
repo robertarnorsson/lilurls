@@ -18,6 +18,7 @@ class UrlModel(models.Model):
     original_url = models.URLField(max_length=200)
     short_url_extension = models.CharField(max_length=15, unique=True)
     visit_count = models.IntegerField(default=0)
+    report_count = models.IntegerField(default=0)
     creation_date = models.DateTimeField(auto_now_add=True)
     expiration_date = models.DateTimeField()
 
@@ -28,8 +29,15 @@ class UrlModel(models.Model):
         self.visit_count += 1
         self.save()
     
+    def increment_report(self):
+        self.report_count += 1
+        self.save()
+    
     def get_counter(self):
         return self.visit_count
+    
+    def get_reports(self):
+        return self.report_count
     
     def get_original(self):
         return self.original_url
