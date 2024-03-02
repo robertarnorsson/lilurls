@@ -1,0 +1,41 @@
+{% load static %}
+
+<footer class="bg-dark">
+  <div class="max-w-screen-xl px-4 py-12 mx-auto space-y-8 overflow-hidden sm:px-6 lg:px-8">
+    <nav class="flex flex-wrap justify-center -mx-5 -my-2">
+        <div class="px-5 py-2">
+            <a href="{% url 'shortener' %}" class="text-base leading-6 text-light hover:text-light-50">
+                Shorten
+            </a>
+        </div>
+        <div class="px-5 py-2">
+            <a href="{% url 'track' %}" class="text-base leading-6 text-light hover:text-light-50">
+                Track
+            </a>
+        </div>
+        <div class="px-5 py-2">
+            <a href="{% url 'report' %}" class="text-base leading-6 text-light hover:text-light-50">
+                Report
+            </a>
+        </div>
+        <div class="px-5 py-2">
+            <a href="{% url 'terms' %}" class="text-base leading-6 text-light hover:text-light-50">
+                Terms
+            </a>
+        </div>
+        <div class="px-5 py-2">
+            <a href="{% url 'privacy' %}" class="text-base leading-6 text-light hover:text-light-50">
+                Privacy
+            </a>
+        </div>
+        <div class="px-5 py-2">
+          <a href="https://github.com/robertarnorsson/lilurls" class="text-base leading-6 text-light hover:text-light-50">
+              Github
+          </a>
+      </div>
+    </nav>
+    <p class="mt-8 text-base leading-6 text-center text-light-500">
+        © 2024 Lilurls. All rights reserved.
+    </p>
+  </div>
+</footer>

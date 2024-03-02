@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Shorten a URL - Lilurls{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4">
+    <h1 class="text-5xl font-bold text-center text-light mt-24">Effortless URL Shortening</h1>
+    <p class="text-base font-light text-center text-light mt-4 mb-24">We've shortened <strong class="text-xl mx-1">{{ total_count }}</strong> URLs so far</p>
+    <div class="max-w-xl my-44 mx-auto rounded-md border border-neutral-800 bg-dark text-center shadow overflow-hidden">
+        {% if short_url %}
+        <div class="p-4">
+            <div class="flex justify-center items-center py-12">
+                <p class="text-2xl font-bold text-light mx-1">{{ short_url }}</p>
+                <button class="ml-4 text-gray-400 hover:text-light cursor-pointer" onclick="navigator.clipboard.writeText('{{ short_url }}')">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
+                    </svg>
+                </button>
+            </div>
+            <p class="text-sm font-light text-light mt-2">Need something else?</p>
+            <div class="flex flex-row justify-evenly max-w-48 mx-auto">
+                <a href="{% url 'shortener' %}" class="text-base font-light text-light">Shorten</a>
+                <a href="{% url 'track' %}" class="text-base font-light text-light">Track</a>
+            </div>
+        </div>
+        {% else %}
+        <form class="p-8" action="/" method="post">
+            {% csrf_token %}
+            <div class="mb-6 flex rounded overflow-hidden">
+                <input id="long_url" class="w-full py-3 px-4 text-gray-300 placeholder-dark-600 bg-dark-900 rounded-l border-2 border-transparent focus:outline-none focus:border-neutral-800" type="text" name="long_url" placeholder="https://example.com" maxlength="100" required>
+                <button class="bg-light-100 hover:bg-light-300 text-dark font-bold py-3 px-6 rounded-r focus:outline-none focus:shadow-outline" type="submit">Shorten</button>
+            </div>
+            <p class="text-xs text-gray-400">By using our service, you agree to our <a href="{% url 'terms' %}" class="text-light hover:text-gray-400 hover:underline">Terms of Service</a> and <a href="{% url 'privacy' %}" class="text-light hover:text-gray-400 hover:underline">Privacy Policy</a>.</p>
+        </form>
+        {% endif %}
+    </div>
+    <div class="py-24 pb-48 mx-auto max-w-4xl">
+        <h2 class="mb-8 text-4xl font-bold text-center text-light">Why use Lilurls?</h2>
+        <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
+            <div class="p-4 py-6 rounded-md border border-neutral-800 bg-dark text-center shadow">
+                <h3 class="text-xl text-light font-semibold mb-2">Totally Free</h3>
+                <p class="text-light">Enjoy unlimited URL shortening without any cost.</p>
+            </div>
+            <div class="p-4 py-6 rounded-md border border-neutral-800 bg-dark text-center shadow">
+                <h3 class="text-xl text-light font-semibold mb-2">No Tracking</h3>
+                <p class="text-light">Respecting privacy, we never track or store your data.</p>
+            </div>
+            <div class="p-4 py-6 rounded-md border border-neutral-800 bg-dark text-center shadow">
+                <h3 class="text-xl text-light font-semibold mb-2">Link Expiration</h3>
+                <p class="text-light">Links auto-expire after 7 days, ensuring security</p>
+            </div>
+            <div class="p-4 py-6 rounded-md border border-neutral-800 bg-dark text-center shadow">
+                <h3 class="text-xl text-light font-semibold mb-2">Fast and Reliable</h3>
+                <p class="text-light">Experience swift and dependable access to your URLs.</p>
+            </div>
+        </div>
+    </div>    
+</div>
+{% endblock %}

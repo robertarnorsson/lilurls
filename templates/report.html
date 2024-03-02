@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Report URL - Lilurls{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4">
+    <h1 class="text-5xl font-bold text-center text-light mt-24">Report a URL</h1>
+    <div class="max-w-xl my-44 mx-auto rounded-md border border-neutral-800 bg-dark text-center shadow overflow-hidden">
+        {% if not form_submitted %}
+        <form class="p-8" action="{% url 'report' %}" method="post">
+            {% csrf_token %}
+            {{form }}
+            <button class="bg-light-100 hover:bg-light-300 text-dark font-bold py-3 px-6 mt-6 rounded focus:outline-none focus:shadow-outline" type="submit">Submit Report</button>
+        </form>
+        {% else %}
+            <div class="p-8">
+                <h2 class="text-3xl font-bold text-light mb-4">Thank You</h2>
+                <p class="text-lg text-light">Your report has been submitted.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

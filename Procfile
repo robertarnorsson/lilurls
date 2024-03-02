@@ -1,0 +1,1 @@
+web: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn lilurls.wsgi --log-level debug --timeout 90 --workers=3 --threads=3 --worker-connections=1000
