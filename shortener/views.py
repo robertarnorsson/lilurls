@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.shortcuts import render
@@ -6,6 +7,8 @@ import random
 import string
 import datetime
 from urllib.parse import urlparse, unquote
+
+from django.urls import reverse
 
 from shortener import forms
 from shortener import models
@@ -71,39 +74,58 @@ def tracking(request):
     return render(request, 'tracking.html', {'form': form, 'example_site_url': example_url})
 
 def redirect_url(request, short_url_extension):
-    url = get_object_or_404(models.UrlModel, short_url_extension=short_url_extension)
-    total_reports = url.get_reports()
-    if url.is_expired():
-        url.delete()
-        return render(request, 'home.html', status=404)
-    if total_reports >= 15:
-        url.delete()
-        return render(request, 'home.html', status=404)
-    if total_reports >= 5:
-        full_warning_url = request.build_absolute_uri('/w/') + short_url_extension
-        return redirect(full_warning_url)
-    url.increment()
-    return redirect(url.original_url)
+    try:
+        url = models.UrlModel.objects.get(short_url_extension=short_url_extension)
+        total_reports = url.get_reports()
+
+        if url.is_expired():
+            url.delete()
+            messages.error(request, "This URL has expired.")
+            return redirect('shortener')
+
+        if total_reports >= 15:
+            url.delete()
+            messages.error(request, "This URL has been removed due to reports.")
+            return redirect('shortener')
+
+        if total_reports >= 5:
+            full_warning_url = request.build_absolute_uri('/w/') + short_url_extension
+            return redirect(full_warning_url)
+
+        url.increment()
+        return redirect(url.original_url)
+
+    except models.UrlModel.DoesNotExist:
+        messages.error(request, "The requested URL does not exist.")
+        return redirect('shortener')
 
 def track_url(request, short_url_extension):
-    url = get_object_or_404(models.UrlModel, short_url_extension=short_url_extension)
-    original_url = url.get_original()
-    count = url.get_counter()
-    days_left = url.get_days_left()
-    total_reports = url.get_reports()
-    if url.is_expired():
-        url.delete()
-        return render(request, 'home.html', status=404)
-    full_short_url = request.build_absolute_uri('/u/') + short_url_extension
-    context = {
-        'short_url': full_short_url,
-        'original_url': original_url,
-        'url_extension': short_url_extension,
-        'total_count': count,
-        'days_left': days_left,
-        'total_reports': total_reports,
-    }
-    return render(request, 'track_url.html', context)
+    try:
+        url = models.UrlModel.objects.get(short_url_extension=short_url_extension)
+        original_url = url.get_original()
+        count = url.get_counter()
+        days_left = url.get_days_left()
+        total_reports = url.get_reports()
+
+        if url.is_expired():
+            url.delete()
+            messages.error(request, "This URL has expired.")
+            return redirect('shortener')
+
+        full_short_url = request.build_absolute_uri('/u/') + short_url_extension
+        context = {
+            'short_url': full_short_url,
+            'original_url': original_url,
+            'url_extension': short_url_extension,
+            'total_count': count,
+            'days_left': days_left,
+            'total_reports': total_reports,
+        }
+        return render(request, 'track_url.html', context)
+
+    except models.UrlModel.DoesNotExist:
+        messages.error(request, "The requested URL does not exist.")
+        return redirect('shortener')
 
 def report_url(request):
     form_submitted = False
@@ -127,18 +149,27 @@ def report_url(request):
 
     return render(request, 'report.html', {'form': form, 'form_submitted': form_submitted})
 
-def rediect_warning(request, short_url_extension):
-    short_url_extension = short_url_extension
-    url_model = models.UrlModel.objects.get(short_url_extension=short_url_extension)
-    original_url = url_model.get_original()
-    total_reports = url_model.get_reports()
-    full_short_url = request.build_absolute_uri('/u/') + short_url_extension
-    return render(request, 'redirect_warning.html', {'total_reports': total_reports, 'original_url': original_url, 'short_url': full_short_url})
+def redirect_warning(request, short_url_extension):
+    try:
+        url_model = models.UrlModel.objects.get(short_url_extension=short_url_extension)
+        original_url = url_model.get_original()
+        total_reports = url_model.get_reports()
+        full_short_url = request.build_absolute_uri('/u/') + short_url_extension
+
+        return render(request, 'redirect_warning.html', {
+            'total_reports': total_reports,
+            'original_url': original_url,
+            'short_url': full_short_url
+        })
+
+    except models.UrlModel.DoesNotExist:
+        messages.error(request, "The requested URL does not exist.")
+        return redirect('shortener')
 
 def error_404(request, _):
     messages.error(request, "That URL does not exist or has expired!")
-    return redirect(request.build_absolute_uri())
+    return redirect('shortener')
 
 def error_500(request):
     messages.error(request, "An error happened on our servers!")
-    return redirect(request.build_absolute_uri())
+    return redirect('shortener')
