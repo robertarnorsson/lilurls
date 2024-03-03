@@ -134,3 +134,11 @@ def rediect_warning(request, short_url_extension):
     total_reports = url_model.get_reports()
     full_short_url = request.build_absolute_uri('/u/') + short_url_extension
     return render(request, 'redirect_warning.html', {'total_reports': total_reports, 'original_url': original_url, 'short_url': full_short_url})
+
+def error_404(request, _):
+    messages.error(request, "That URL does not exist or has expired!")
+    return redirect(request.build_absolute_uri())
+
+def error_500(request):
+    messages.error(request, "An error happened on our servers!")
+    return redirect(request.build_absolute_uri())
