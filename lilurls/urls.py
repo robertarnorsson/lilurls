@@ -9,6 +9,7 @@ urlpatterns = [
     path("", include("shortener.urls")),
     path("terms/", TemplateView.as_view(template_name="terms.html"), name="terms"),
     path("privacy/", TemplateView.as_view(template_name="privacy.html"), name="privacy"),
+    path("robots.txt",TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots"),
     path('admin/', admin.site.urls),
 ]
 
