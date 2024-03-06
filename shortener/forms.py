@@ -1,6 +1,7 @@
 from django import forms
 
-from captcha.fields import CaptchaField, CaptchaTextInput
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV3
 
 from shortener import models
 
@@ -9,8 +10,10 @@ class UrlForm(forms.Form):
         label="Website URL",
         widget=forms.URLInput(attrs={'class': 'w-full py-3 px-4 text-gray-300 placeholder-dark-600 bg-dark-900 rounded-l border-2 border-transparent focus:outline-none focus:border-neutral-800'})
     )
-    captcha_field = CaptchaField(
-        widget=CaptchaTextInput(attrs={'class': 'w-full py-1 px-2 text-gray-300 text-sm placeholder-dark-600 bg-dark-900 rounded border-2 border-transparent focus:outline-none focus:border-neutral-800', 'placeholder': 'Captcha'})
+    captcha_field = ReCaptchaField(
+        widget=ReCaptchaV3(
+            action='shorten'
+        )
     )
 
 class TrackingForm(forms.Form):

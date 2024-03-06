@@ -12,7 +12,6 @@ urlpatterns = [
     path("robots.txt",TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots"),
     path("ads.txt",TemplateView.as_view(template_name="ads.txt", content_type="text/plain"), name="ads"),
     path('admin/', admin.site.urls),
-    path('captcha/', include('captcha.urls'))
 ]
 
 handler500 = 'shortener.views.error_500'

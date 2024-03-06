@@ -8,8 +8,6 @@ import datetime
 import requests
 from urllib.parse import urlparse, unquote
 
-from django.urls import reverse
-
 from shortener import forms
 from shortener import models
 

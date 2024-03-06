@@ -27,12 +27,11 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'lilurls.com',
-    'url.lilurls.com',
+    'lilurls.com',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://lilurls.com',
-    'https://url.lilurls.com',
 ]
 
 INTERNAL_IPS = (
@@ -48,12 +47,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'django_recaptcha',
     'shortener',
-    'captcha'
 ]
 
-CAPTCHA_BACKGROUND_COLOR = '#101010'
-CAPTCHA_FOREGROUND_COLOR = '#f4f4f4'
+RECAPTCHA_PUBLIC_KEY = env('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = env('RECAPTCHA_PRIVATE_KEY')
+
+RECAPTCHA_REQUIRED_SCORE = float(env('RECAPTCHA_REQUIRED_SCORE')) / 100
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
