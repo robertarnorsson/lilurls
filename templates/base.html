@@ -7,8 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Base{% endblock %}</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7091655087728146" crossorigin="anonymous"></script>
-    <meta name="google-adsense-account" content="ca-pub-7091655087728146">
+    {% include 'components/ads.html' %}
     {% include 'components/meta.html' %}
     {% include 'components/favicon.html' %}
     {% include 'components/css.html' %}
