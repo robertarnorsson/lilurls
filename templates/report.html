@@ -10,7 +10,7 @@
         {% if not form_submitted %}
         <form class="p-8" action="{% url 'report' %}" method="post">
             {% csrf_token %}
-            {{form }}
+            {{ form }}
             <button class="bg-light-100 hover:bg-light-300 text-dark font-bold py-3 px-6 mt-6 rounded focus:outline-none focus:shadow-outline" type="submit">Submit Report</button>
         </form>
         {% else %}

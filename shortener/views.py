@@ -1,11 +1,11 @@
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.contrib import messages
 from django.shortcuts import render
 
 import random
 import string
 import datetime
+import requests
 from urllib.parse import urlparse, unquote
 
 from django.urls import reverse
@@ -29,15 +29,32 @@ def check_url_exists(url_trail):
     except models.UrlModel.DoesNotExist:
         return False
 
+def is_website_up(url):
+    try:
+        response = requests.get(url)
+        print(response)
+        return response.status_code == 200
+    except requests.RequestException:
+        return False
+
 def shortener(request):
     if request.method == "POST":
         form = forms.UrlForm(request.POST)
         if form.is_valid():
             original_url = form.cleaned_data['long_url']
+
+            if not is_website_up(original_url):
+                messages.error(request, "There seems to not be any website for that URL. Please try again if you think this is a mistake.")
+                return render(request, 'home.html', {'form': form})
+
             url_trail = generate_random_url()
             expiration_period = datetime.timedelta(days=7)
             expiration_date = datetime.datetime.now() + expiration_period
-            short_url = models.UrlModel(original_url=original_url, short_url_extension=url_trail, expiration_date=expiration_date)
+            short_url = models.UrlModel(
+                original_url=original_url, 
+                short_url_extension=url_trail, 
+                expiration_date=expiration_date
+            )
             short_url.save()
 
             counter, _ = models.UrlCounter.objects.get_or_create(id=1)
@@ -45,14 +62,13 @@ def shortener(request):
 
             full_short_url = request.build_absolute_uri('/u/') + url_trail
             count = counter.count if counter else 0
-            return render(request, 'home.html', {'short_url': full_short_url, 'total_count': count})
+            return render(request, 'home.html', {'form': form,'short_url': full_short_url, 'total_count': count})
         else:
-            print("Form not valid")
-            messages.error(request, "Form Not valid")
-    else:
-        counter = models.UrlCounter.objects.first()
-        count = counter.count if counter else 0
-        form = forms.UrlForm()
+            messages.error(request, "Captcha is not valid")
+    
+    counter = models.UrlCounter.objects.first()
+    count = counter.count if counter else 0
+    form = forms.UrlForm()
     return render(request, 'home.html', {'form': form, 'total_count': count})
 
 def tracking(request):

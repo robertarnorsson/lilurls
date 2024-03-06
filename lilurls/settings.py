@@ -49,7 +49,11 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'shortener',
+    'captcha'
 ]
+
+CAPTCHA_BACKGROUND_COLOR = '#101010'
+CAPTCHA_FOREGROUND_COLOR = '#f4f4f4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
