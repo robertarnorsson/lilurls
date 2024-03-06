@@ -17,6 +17,7 @@
                     <input id="tracking_url" class="w-full py-3 px-4 text-gray-300 placeholder-dark-600 bg-dark-900 rounded-l border-2 border-transparent focus:outline-none focus:border-neutral-800" type="url" name="tracking_url" placeholder="{{ example_site_url }}" maxlength="100" required>
                     <button class="bg-light-100 hover:bg-light-300 text-dark font-bold py-3 px-6 rounded-r focus:outline-none focus:shadow-outline" type="submit">Track</button>
                 </div>
+                {{ form.captcha }}
                 <p class="text-xs text-gray-400">By using our service, you agree to our <a href="{% url 'terms' %}" class="text-light hover:text-gray-400 hover:underline">Terms of Service</a> and <a href="{% url 'privacy' %}" class="text-light hover:text-gray-400 hover:underline">Privacy Policy</a>.</p>
             </form>
         </div>
