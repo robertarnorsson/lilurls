@@ -27,23 +27,38 @@ def check_url_exists(url_trail):
     except models.UrlModel.DoesNotExist:
         return False
 
+def is_lilurls_domain(url):
+    parsed_url = urlparse(url)
+    return parsed_url.netloc.endswith('lilurls.com')
+
 def is_website_up(url):
     try:
-        response = requests.get(url)
-        print(response)
-        return response.status_code == 200
+        response = requests.get(url, allow_redirects=False)
+        if response.status_code == 200:
+            return True
+        elif response.is_redirect or response.is_permanent_redirect:
+            return False
+        else:
+            return False
     except requests.RequestException:
         return False
 
 def shortener(request):
+    counter = models.UrlCounter.objects.first()
+    count = counter.count if counter else 0
+
     if request.method == "POST":
         form = forms.UrlForm(request.POST)
         if form.is_valid():
             original_url = form.cleaned_data['long_url']
 
+            if is_lilurls_domain(original_url):
+                messages.error(request, "You cannot shorten a URL that is already from lilurls.com.")
+                return render(request, 'home.html', {'form': form, 'total_count': count})
+
             if not is_website_up(original_url):
-                messages.error(request, "There seems to not be any website for that URL. Please try again if you think this is a mistake.")
-                return render(request, 'home.html', {'form': form})
+                messages.error(request, "There seems to not be any website for that URL or it is a redirect. Please try again if you think this is a mistake.")
+                return render(request, 'home.html', {'form': form, 'total_count': count})
 
             url_trail = generate_random_url()
             expiration_period = datetime.timedelta(days=7)
@@ -73,7 +88,13 @@ def tracking(request):
     if request.method == "POST":
         form = forms.TrackingForm(request.POST)
         if form.is_valid():
-            url_trail = get_url_trail(form.cleaned_data['tracking_url'])
+            tracking_url = form.cleaned_data['tracking_url']
+
+            if not is_lilurls_domain(tracking_url):
+                messages.error(request, "You can only track URLs from lilurls.com.")
+                return render(request, 'tracking.html', {'form': form})
+
+            url_trail = get_url_trail(tracking_url)
             if check_url_exists(url_trail):
                 full_tracking_url = request.build_absolute_uri('/t/') + url_trail
                 return redirect(full_tracking_url)
