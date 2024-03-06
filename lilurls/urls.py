@@ -10,6 +10,7 @@ urlpatterns = [
     path("terms/", TemplateView.as_view(template_name="terms.html"), name="terms"),
     path("privacy/", TemplateView.as_view(template_name="privacy.html"), name="privacy"),
     path("robots.txt",TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots"),
+    path("ads.txt",TemplateView.as_view(template_name="ads.txt", content_type="text/plain"), name="ads"),
     path('admin/', admin.site.urls),
     path('captcha/', include('captcha.urls'))
 ]
