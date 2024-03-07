@@ -27,7 +27,6 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'lilurls.com',
-    'lilurls.com',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
