@@ -118,12 +118,12 @@ def redirect_url(request, short_url_extension):
             messages.error(request, "This URL has expired.")
             return redirect('shortener')
 
-        if total_reports >= 15:
+        if total_reports >= 10:
             url.delete()
             messages.error(request, "This URL has been removed due to reports.")
             return redirect('shortener')
 
-        if total_reports >= 5:
+        if total_reports >= 2:
             full_warning_url = request.build_absolute_uri('/w/') + short_url_extension
             return redirect(full_warning_url)
 
