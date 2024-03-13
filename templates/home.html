@@ -11,34 +11,38 @@
     </div>
     <div class="max-w-xl mt-20 mb-44 mx-auto rounded-md border border-neutral-800 bg-dark text-center shadow overflow-hidden">
         {% if short_url %}
-        <div class="p-4">
+        <div class="flex flex-col items-center p-4">
             <div class="flex justify-center items-center py-12">
-                <p class="text-2xl font-bold text-light mx-1">{{ short_url }}</p>
-                <button onclick="copyToClipboard('{{ short_url }}')" class="bg-dark-800 hover:bg-dark-700 text-light hover:text-gray-300 rounded-lg p-2 inline-flex items-center justify-center transition-all duration-300 ease-in-out">
-                    <span id="default-icon">
-                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
-                            <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z"/>
-                        </svg>
-                    </span>
-                    <span id="success-icon" class="hidden items-center">
-                        <svg class="w-4 h-4 text-light" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
-                        </svg>
-                    </span>
-                </button>                
+                <p class="text-2xl font-bold text-light mx-1">{{ short_url }}</p>                
+            </div>
+            <div class="min-w-48 mb-6">
+                <div class="flex flex-row justify-evenly">
+                    <button onclick="copyToClipboard('{{ short_url }}')" class="w-10 h-10 flex justify-center items-center bg-dark-800 hover:bg-dark-700 text-light hover:text-gray-300 rounded transition duration-300 ease-in-out">
+                        <div id="default-icon" class="w-6 h-6">
+                            <i class="material-icons-round text-base text-light items-center">content_copy</i>
+                        </div>
+                        <div id="success-icon" class="w-6 h-6 hidden">
+                            <i class="material-icons-round text-base text-light items-center">done</i>
+                        </div>
+                    </button>
+                    <a href="{{ short_url }}" class="w-10 h-10 flex justify-center items-center bg-dark-800 hover:bg-dark-700 text-light hover:text-gray-300 rounded transition duration-300 ease-in-out">
+                        <i class="material-icons-round text-light">east</i>
+                    </a>
+                </div>
             </div>
             <p class="text-sm font-light text-light mt-2">Need something else?</p>
-            <div class="flex flex-row justify-evenly max-w-48 mx-auto">
-                <a href="{% url 'shortener' %}" class="text-base font-light text-light">Shorten</a>
+            <div class="flex flex-row justify-evenly max-w-48 mx-auto space-x-4">
+                <a href="{% url 'home' %}" class="text-base font-light text-light">Shorten</a>
                 <a href="{% url 'track' %}" class="text-base font-light text-light">Track</a>
+                <a href="{% url 'report' %}" class="text-base font-light text-light">Report</a>
             </div>
         </div>
         {% else %}
         <form class="p-8" action="/" method="post">
             {% csrf_token %}
-            <div class="mb-6 flex rounded overflow-hidden">
-                <input id="long_url" class="w-full py-3 px-4 text-gray-300 placeholder-dark-600 bg-dark-900 rounded-l border-2 border-transparent focus:outline-none focus:border-neutral-800" type="text" name="long_url" placeholder="https://example.com" maxlength="100" required>
-                <button class="bg-light-100 hover:bg-light-300 text-dark font-bold py-3 px-6 rounded-r focus:outline-none focus:shadow-outline" type="submit">Shorten</button>
+            <div class="mb-6 flex flex-col md:flex-row rounded overflow-hidden">
+                <input id="long_url" class="w-full py-5 md:py-3 px-4 text-gray-300 placeholder-dark-600 bg-dark-900 text-base rounded-t md:rounded-l border-2 border-transparent focus:outline-none focus:border-neutral-800" type="text" name="long_url" placeholder="https://example.com" maxlength="100" required>
+                <button class="bg-light-100 hover:bg-light-300 text-dark font-bold py-3 px-6 rounded-b md:rounded-r focus:outline-none focus:shadow-outline" type="submit">Shorten</button>
             </div>
             {{ form.captcha }}
             <p class="text-xs text-gray-400">By using our service, you agree to our <a href="{% url 'terms' %}" class="text-light hover:text-gray-400 hover:underline">Terms of Service</a> and <a href="{% url 'privacy' %}" class="text-light hover:text-gray-400 hover:underline">Privacy Policy</a>.</p>
@@ -65,6 +69,91 @@
                 <p class="text-light">Experience swift and dependable access to your URLs.</p>
             </div>
         </div>
-    </div>    
+    </div>
+    <div class="py-24 mx-auto max-w-xl">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-light mb-4">How does Lilurls work?</h2>
+            <p class="text-base font-light text-light">It really is this simple!</p>
+        </div>
+        <ul class="relative flex flex-col gap-2">
+            <li class="flex-1 group flex gap-x-4">
+                <div class="min-w-7 min-h-7 md:min-w-12 md:min-h-12 flex flex-col items-center text-xs align-middle">
+                    <span class="size-7 md:size-12 flex justify-center items-center flex-shrink-0 bg-dark border border-light-400 font-medium text-lg text-light-300 rounded-full">
+                        1
+                    </span>
+                    <div class="mt-2 w-px h-full bg-light-500 group-last:hidden"></div>
+                </div>
+                <div class="grow pt-0.5 pb-10">
+                    <span class="block text-base font-medium text-gray-800 dark:text-white">
+                        Enter URL
+                    </span>
+                    <p class="text-sm text-gray-500">
+                        Submit the long URL that you want to shorten.
+                    </p>
+                </div>
+            </li>
+
+            <li class="flex-1 group flex gap-x-4">
+                <div class="min-w-7 min-h-7 md:min-w-12 md:min-h-12 flex flex-col items-center text-xs align-middle">
+                    <span class="size-7 md:size-12 flex justify-center items-center flex-shrink-0 bg-dark border border-light-400 font-medium text-lg text-light-300 rounded-full">
+                        2
+                    </span>
+                    <div class="mt-2 w-px h-full bg-light-500 group-last:hidden"></div>
+                </div>
+                <div class="grow pt-0.5 pb-10">
+                    <span class="block text-base font-medium text-gray-800 dark:text-white">
+                        URL Shortening
+                    </span>
+                    <p class="text-sm text-gray-500">
+                        Lilurls generates a unique, short link.
+                    </p>
+                </div>
+            </li>
+            
+            <li class="flex-1 group flex gap-x-4">
+                <div class="min-w-7 min-h-7 md:min-w-12 md:min-h-12 flex flex-col items-center text-xs align-middle">
+                    <span class="size-7 md:size-12 flex justify-center items-center flex-shrink-0 bg-dark border border-light-400 font-medium text-lg text-light-300 rounded-full">
+                        3
+                    </span>
+                    <div class="mt-2 w-px h-full bg-light-500 group-last:hidden"></div>
+                </div>
+                <div class="grow pt-0.5 pb-10">
+                    <span class="block text-base font-medium text-gray-800 dark:text-white">
+                        Share Your Link
+                    </span>
+                    <p class="text-sm text-gray-500">
+                        Easily share the short link across social platforms or via email.
+                    </p>
+                </div>
+            </li>
+            
+            <li class="flex-1 group flex gap-x-4">
+                <div class="min-w-7 min-h-7 md:min-w-12 md:min-h-12 flex flex-col items-center text-xs align-middle">
+                    <span class="size-7 md:size-12 flex justify-center items-center flex-shrink-0 bg-dark border border-light-400 font-medium text-lg text-light-300 rounded-full">
+                        4
+                    </span>
+                    <div class="mt-2 w-px h-full bg-light-500 group-last:hidden"></div>
+                </div>
+                <div class="grow pt-0.5 pb-10">
+                    <span class="block text-base font-medium text-gray-800 dark:text-white">
+                        Track & Redirect
+                    </span>
+                    <p class="text-sm text-gray-500">
+                        When clicked, the link redirects to the original URL, and you can track its usage.
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="py-24 mx-auto max-w-4xl text-center">
+        <h2 class="text-4xl font-bold text-light mb-4">Ready to Shorten Your Link?</h2>
+        <p class="text-base font-light text-light mb-12">Start now and make your links manageable</p>
+        <a href="{% url 'home' %}" class="bg-light-100 hover:bg-light-300 text-dark font-bold py-3 px-6 rounded-md transition-all duration-300 ease-in-out mb-6 inline-block">Shorten a Link</a>
+        <div class="flex justify-center gap-4 mt-4">
+            <a href="{% url 'track' %}" class="text-base font-light text-light hover:text-gray-400 border border-light-300 py-2 px-4 rounded-md">Track a Link</a>
+            <a href="{% url 'report' %}" class="text-base font-light text-light hover:text-gray-400 border border-light-300 py-2 px-4 rounded-md">Report a Link</a>
+        </div>
+    </div>
 </div>
 {% endblock %}

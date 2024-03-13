@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Tracking - Lilurls{% endblock %}
+
+{% block content %}    
+<div class="container mx-auto px-4">
+    <div class="py-20">
+        <h1 class="text-5xl font-bold text-center text-light">Track a shortened URL</h1>
+        <p class="text-base font-light text-center text-light mt-4">Enter a shortened URL to track the times it has been clicked</p>
+    </div>
+    <div class="max-w-xl mt-20 mb-44 mx-auto rounded-md border border-neutral-800 bg-dark text-center shadow overflow-hidden">
+        <div class="p-4">
+            <form class="p-8" action="{% url 'track' %}" method="post">
+                {% csrf_token %}
+                <div class="mb-6 flex rounded overflow-hidden">
+                    <input id="tracking_url" class="w-full py-3 px-4 text-gray-300 placeholder-dark-600 bg-dark-900 rounded-l border-2 border-transparent focus:outline-none focus:border-neutral-800" type="url" name="tracking_url" placeholder="{{ example_site_url }}" maxlength="100" required>
+                    <button class="bg-light-100 hover:bg-light-300 text-dark font-bold py-3 px-6 rounded-r focus:outline-none focus:shadow-outline" type="submit">Track</button>
+                </div>
+                {{ form.captcha }}
+                <p class="text-xs text-gray-400">By using our service, you agree to our <a href="{% url 'terms' %}" class="text-light hover:text-gray-400 hover:underline">Terms of Service</a> and <a href="{% url 'privacy' %}" class="text-light hover:text-gray-400 hover:underline">Privacy Policy</a>.</p>
+            </form>
+        </div>
+    </div>
+    <div class="py-24 mx-auto max-w-lg">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-light mb-4">How does Lilurls work?</h2>
+            <p class="text-base font-light text-light">It's super simple!</p>
+        </div>
+        <div class="flex justify-center">
+            <ul class="flex flex-col gap-2 w-fit">
+                <li class="flex-1 group flex gap-x-4">
+                    <div class="min-w-7 min-h-7 md:min-w-12 md:min-h-12 flex flex-col items-center text-xs align-middle">
+                        <span class="size-7 md:size-12 flex justify-center items-center flex-shrink-0 bg-dark font-medium text-lg text-light-300 rounded-full">
+                            <i class="material-icons-round md-32">add_link</i>
+                        </span>
+                    </div>
+                    <div class="grow pt-0.5 pb-10">
+                        <span class="block text-base font-medium text-gray-800 dark:text-white">
+                            Generate URL
+                        </span>
+                        <p class="text-sm text-gray-500">
+                            Generate a short URL for you original URL.
+                        </p>
+                    </div>
+                </li>
+    
+                <li class="flex-1 group flex gap-x-4">
+                    <div class="min-w-7 min-h-7 md:min-w-12 md:min-h-12 flex flex-col items-center text-xs align-middle">
+                        <span class="size-7 md:size-12 flex justify-center items-center flex-shrink-0 bg-dark font-medium text-lg text-light-300 rounded-full">
+                            <i class="material-icons-round md-32">reply</i>
+                        </span>
+                    </div>
+                    <div class="grow pt-0.5 pb-10">
+                        <span class="block text-base font-medium text-gray-800 dark:text-white">
+                            Share the URL
+                        </span>
+                        <p class="text-sm text-gray-500">
+                            Share the shortened URL to whom ever you want.
+                        </p>
+                    </div>
+                </li>
+                
+                <li class="flex-1 group flex gap-x-4">
+                    <div class="min-w-7 min-h-7 md:min-w-12 md:min-h-12 flex flex-col items-center text-xs align-middle">
+                        <span class="size-7 md:size-12 flex justify-center items-center flex-shrink-0 bg-dark font-medium text-lg text-light-300 rounded-full">
+                            <i class="material-icons-round md-32">plus_one</i>
+                        </span>
+                    </div>
+                    <div class="grow pt-0.5 pb-10">
+                        <span class="block text-base font-medium text-gray-800 dark:text-white">
+                            Simple Tracking
+                        </span>
+                        <p class="text-sm text-gray-500">
+                            Every time someone clicks your short URL it gets tracked.
+                        </p>
+                    </div>
+                </li>
+                
+                <li class="flex-1 group flex gap-x-4">
+                    <div class="min-w-7 min-h-7 md:min-w-12 md:min-h-12 flex flex-col items-center text-xs align-middle">
+                        <span class="size-7 md:size-12 flex justify-center items-center flex-shrink-0 bg-dark font-medium text-lg text-light-300 rounded-full">
+                            <i class="material-icons-round md-32">bar_chart</i>
+                        </span>
+                    </div>
+                    <div class="grow pt-0.5 pb-10">
+                        <span class="block text-base font-medium text-gray-800 dark:text-white">
+                            See Results
+                        </span>
+                        <p class="text-sm text-gray-500">
+                            Enter your short URL and see the results of the URL.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

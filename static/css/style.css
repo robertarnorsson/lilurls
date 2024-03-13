@@ -4,3 +4,9 @@
   image-rendering: optimizeSpeed;
   background-size: contain;
 }
+
+.material-icons-round.md-18 { font-size: 18px; }
+.material-icons-round.md-24 { font-size: 24px; }
+.material-icons-round.md-32 { font-size: 32px; }
+.material-icons-round.md-36 { font-size: 36px; }
+.material-icons-round.md-48 { font-size: 48px; }

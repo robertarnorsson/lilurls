@@ -1,12 +1,13 @@
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.shortcuts import render
+from django.utils import timezone
 
 import random
 import string
-import datetime
 import requests
 from urllib.parse import urlparse, unquote
+from django_ratelimit.decorators import ratelimit
 
 from shortener import forms
 from shortener import models
@@ -43,9 +44,14 @@ def is_website_up(url):
     except requests.RequestException:
         return False
 
-def shortener(request):
+@ratelimit(key='ip', rate='3/m', method='POST', block=False)
+def home(request):
     counter = models.UrlCounter.objects.first()
     count = counter.count if counter else 0
+
+    if getattr(request, 'limited', False):
+        messages.error(request, "You are going too fast! Please slow down.")
+        return redirect('home')
 
     if request.method == "POST":
         form = forms.UrlForm(request.POST)
@@ -61,8 +67,8 @@ def shortener(request):
                 return render(request, 'home.html', {'form': form, 'total_count': count})
 
             url_trail = generate_random_url()
-            expiration_period = datetime.timedelta(days=7)
-            expiration_date = datetime.datetime.now() + expiration_period
+            expiration_period = timezone.timedelta(days=7)
+            expiration_date = timezone.now() + expiration_period
             short_url = models.UrlModel(
                 original_url=original_url, 
                 short_url_extension=url_trail, 
@@ -84,7 +90,13 @@ def shortener(request):
     form = forms.UrlForm()
     return render(request, 'home.html', {'form': form, 'total_count': count})
 
-def tracking(request):
+@ratelimit(key='ip', rate='5/m', method='POST', block=False)
+def track(request):
+
+    if getattr(request, 'limited', False):
+        messages.error(request, "You are going too fast! Please slow down.")
+        return redirect('track')
+    
     if request.method == "POST":
         form = forms.TrackingForm(request.POST)
         if form.is_valid():
@@ -106,7 +118,7 @@ def tracking(request):
     form = forms.TrackingForm()
     url_trail = generate_random_url()
     example_url = request.build_absolute_uri('/u/') + url_trail
-    return render(request, 'tracking.html', {'form': form, 'example_site_url': example_url})
+    return render(request, 'track.html', {'form': form, 'example_site_url': example_url})
 
 def redirect_url(request, short_url_extension):
     try:
@@ -162,25 +174,38 @@ def track_url(request, short_url_extension):
         messages.error(request, "The requested URL does not exist.")
         return redirect('shortener')
 
+
+@ratelimit(key='ip', rate='5/h', method='POST', block=False)
+@ratelimit(key='post:url', rate='1/d', method='POST', block=False)
 def report_url(request):
     form_submitted = False
+
     if request.method == 'POST':
         form = forms.ReportForm(request.POST)
         if form.is_valid():
             short_url = form.cleaned_data['url']
-            violation_type = form.cleaned_data['violation_type']
-            message = form.cleaned_data['message']
-            url_trail = get_url_trail(short_url)
+
+            if 'url' in request.POST and getattr(request, 'limited', False):
+                messages.error(request, "You can only report the same URL once per day.")
+                return render(request, 'report.html', {'form': form})
+
             try:
-                url_model = models.UrlModel.objects.get(short_url_extension=url_trail)
+                url_model = models.UrlModel.objects.get(short_url_extension=get_url_trail(short_url))
                 url_model.increment_report()
-                report = models.Report(url=short_url, violation_type=violation_type, message=message)
+                report = models.Report(url=short_url, violation_type=form.cleaned_data['violation_type'], message=form.cleaned_data['message'])
                 report.save()
                 form_submitted = True
             except models.UrlModel.DoesNotExist:
                 messages.error(request, "The short URL does not exist in our database.")
+        else:
+            messages.error(request, "There was an error with your submission.")
+            
     else:
         form = forms.ReportForm()
+
+    if getattr(request, 'limited', False) and not form_submitted:
+        messages.error(request, "You are going too fast! Please slow down.")
+        return render(request, 'report.html', {'form': form})
 
     return render(request, 'report.html', {'form': form, 'form_submitted': form_submitted})
 
